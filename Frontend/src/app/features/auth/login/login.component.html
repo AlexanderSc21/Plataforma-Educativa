@@ -1,0 +1,68 @@
+<main class="login-page">
+  <div class="page-container">
+    <app-navbar></app-navbar>
+
+    <section class="auth-hero" aria-labelledby="login-title">
+      <article class="login-card">
+      <header class="login-header">
+        <h1 id="login-title">Hola de nuevo</h1>
+        <p>Ingresa a tu cuenta para continuar aprendiendo.</p>
+      </header>
+
+      <form class="login-form" [formGroup]="loginForm" novalidate (ngSubmit)="onSubmit()">
+        <app-input
+          id="email"
+          label="Correo electronico"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="ejemplo@correo.com"
+          [required]="true"
+          [invalid]="loginForm.controls.email.invalid && loginForm.controls.email.touched"
+          errorText="Ingresa un correo valido."
+        ></app-input>
+
+        <app-input
+          id="password"
+          label="Contrasena"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Tu contrasena"
+          [required]="true"
+          [invalid]="loginForm.controls.password.invalid && loginForm.controls.password.touched"
+          errorText="La contrasena es obligatoria."
+        ></app-input>
+
+        <div class="options-row">
+          <label class="remember-option" for="remember">
+            <input id="remember" type="checkbox" />
+            <span>Recordarme</span>
+          </label>
+          <a href="#">Olvidaste tu contrasena?</a>
+        </div>
+
+        <app-button type="submit" [fullWidth]="true">Iniciar sesion</app-button>
+      </form>
+
+      <p class="divider">O continuar con</p>
+
+      <div class="social-btns">
+        <app-button type="button" variant="secondary">
+          <span aria-hidden="true">G</span>
+          Google
+        </app-button>
+        <app-button type="button" variant="secondary">
+          <span aria-hidden="true">GH</span>
+          GitHub
+        </app-button>
+      </div>
+
+      <footer class="login-footer">
+        No tienes una cuenta?
+        <a routerLink="/auth/signup">Registrate gratis</a>
+      </footer>
+      </article>
+    </section>
+  </div>
+</main>

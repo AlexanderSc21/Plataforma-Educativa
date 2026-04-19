@@ -1,0 +1,101 @@
+<main class="profile-page">
+  <div class="page-container">
+    <nav class="navbar" aria-label="Barra principal de perfil">
+      <button
+        type="button"
+        class="hamburger"
+        aria-label="Abrir menu"
+        [attr.aria-expanded]="isMenuOpen()"
+        aria-controls="profile-nav-links"
+        (click)="toggleMenu()"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <a routerLink="/" class="logo" (click)="closeMenu()">
+        <span class="logo-dot" aria-hidden="true"></span>
+        Aula Nexo
+      </a>
+
+      <label class="search-bar" for="profile-search-input">
+        <span class="sr-only">Buscar cursos, docentes o habilidades</span>
+        <input id="profile-search-input" type="search" placeholder="Buscar cursos, docentes o habilidades..." />
+      </label>
+
+      <div id="profile-nav-links" class="nav-links" [class.nav-open]="isMenuOpen()">
+        <a href="#" (click)="closeMenu()">Explorar</a>
+        <a href="#" (click)="closeMenu()">Mi Aprendizaje</a>
+        <a href="#" (click)="closeMenu()">Certificaciones</a>
+        <a href="#" (click)="closeMenu()">Soporte</a>
+      </div>
+
+      <div class="user-profile-nav">
+        <div class="avatar-circle" aria-label="Perfil de usuario">LP</div>
+      </div>
+    </nav>
+
+    <button
+      type="button"
+      class="menu-backdrop"
+      tabindex="-1"
+      aria-hidden="true"
+      [class.backdrop-visible]="isMenuOpen()"
+      (click)="closeMenu()"
+    ></button>
+
+    <section class="section-container" aria-labelledby="next-learning-title">
+      <div class="header-group">
+        <h2 id="next-learning-title">Que aprender a continuacion</h2>
+        <p>Cursos tendencia para potenciar tu carrera</p>
+      </div>
+
+      <div class="slider-wrapper">
+        <button type="button" class="nav-btn prev" aria-label="Desplazar cursos a la izquierda" (click)="scrollCourses(courseTrack, -300)">
+          &#10094;
+        </button>
+
+        <div #courseTrack class="course-slider" aria-label="Cursos en tendencia">
+          @for (course of courses; track course.title) {
+            <article class="card">
+              <div class="card-banner" [style.background-image]="'url(' + course.imageUrl + ')'">
+                @if (course.premium) {
+                  <span class="badge-premium">Premium</span>
+                }
+              </div>
+
+              <div class="card-body">
+                <h4 class="card-title">{{ course.title }}</h4>
+                <p class="card-author">{{ course.author }}</p>
+
+                <div class="card-rating" aria-label="Calificacion del curso">
+                  <span class="rating-number">{{ course.rating }}</span>
+                  <span class="stars" aria-hidden="true">★★★★★</span>
+                  <span class="rating-count">({{ course.ratingCount }})</span>
+                </div>
+
+                <div class="card-price">
+                  <span class="price-current">{{ course.currentPrice }}</span>
+                  <span class="price-old">{{ course.oldPrice }}</span>
+                </div>
+
+                @if (course.tags.length > 0) {
+                  <div class="card-tags">
+                    @for (tag of course.tags; track tag) {
+                      <span class="tag" [class.tag-bestseller]="tag === 'Bestseller'" [class.tag-new]="tag === 'Nuevo'">{{ tag }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+
+        <button type="button" class="nav-btn next" aria-label="Desplazar cursos a la derecha" (click)="scrollCourses(courseTrack, 300)">
+          &#10095;
+        </button>
+      </div>
+    </section>
+  </div>
+</main>
