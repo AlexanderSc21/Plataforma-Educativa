@@ -1,0 +1,46 @@
+# =========================
+# Sistema operativo
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.iml
+
+# =========================
+# Backend (Java / Maven)
+# =========================
+Backend/plataforma/target/
+Backend/plataforma/.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# =========================
+# Frontend (Angular / Node)
+# =========================
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.angular/
+Frontend/.cache/
+Frontend/coverage/
+Frontend/.sass-cache/
+Frontend/.eslintcache
+
+# Angular SSR build outputs (si aplica)
+Frontend/browser/
+Frontend/server/
+
+# =========================
+# Variables de entorno y temporales
+# =========================
+.env
+.env.*
+*.local
+*.tmp
+*.swp
