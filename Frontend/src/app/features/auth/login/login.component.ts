@@ -18,8 +18,9 @@ export class LoginComponent {
   private readonly router = inject(Router);
 
   readonly loginForm = this.fb.nonNullable.group({
-    email: ['', [Validators.required]],
-    password: ['', [Validators.required]]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+    rememberMe: [false]
   });
 
   onSubmit(): void {
