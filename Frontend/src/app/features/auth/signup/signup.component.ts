@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -16,6 +17,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 export class SignupComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   readonly signupForm = this.fb.nonNullable.group({
     fullName: ['', [Validators.required]],
@@ -25,9 +27,30 @@ export class SignupComponent {
     terms: [false, [Validators.requiredTrue]]
   });
 
+  errorMessage = signal<string>('');
+
   onSubmit(): void {
     if (this.signupForm.valid) {
-      void this.router.navigate(['/profile']);
+      const { fullName, email, password, confirmPassword } = this.signupForm.getRawValue();
+
+      if (password !== confirmPassword) {
+        this.errorMessage.set('Las contraseñas no coinciden.');
+        return;
+      }
+
+      this.authService.register({ name: fullName, email, password }).subscribe({
+        next: () => {
+          void this.router.navigate(['/profile']);
+        },
+        error: (err) => {
+          console.error('Error en el registro', err);
+          if (err.status === 400) {
+            this.errorMessage.set('El correo ya está registrado.');
+          } else {
+            this.errorMessage.set('Ocurrió un error al crear la cuenta.');
+          }
+        }
+      });
       return;
     }
 

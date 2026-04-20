@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   readonly loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -23,9 +25,21 @@ export class LoginComponent {
     rememberMe: [false]
   });
 
+  errorMessage = signal<string>('');
+
   onSubmit(): void {
     if (this.loginForm.valid) {
-      void this.router.navigate(['/profile']);
+      const { email, password } = this.loginForm.getRawValue();
+      
+      this.authService.login({ email, password }).subscribe({
+        next: () => {
+          void this.router.navigate(['/profile']);
+        },
+        error: (err) => {
+          console.error('Error en el login', err);
+          this.errorMessage.set('Correo o contraseña incorrectos.');
+        }
+      });
       return;
     }
 

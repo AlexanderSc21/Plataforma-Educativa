@@ -1,0 +1,112 @@
+<app-navbar></app-navbar>
+
+<div class="settings-container">
+  @if (authService.currentUser$ | async; as user) {
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="user-profile-summary">
+          <div class="avatar-large">{{ getInitials(user.name) }}</div>
+          <h3 class="user-name-display">{{ user.name }}</h3>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item">View public profile</a>
+          <a href="#" class="nav-item">Profile</a>
+          <a href="#" class="nav-item">Photo</a>
+          <a href="#" class="nav-item active">Account Security</a>
+          <a href="#" class="nav-item">Subscriptions</a>
+          <a href="#" class="nav-item">Payment methods</a>
+          <a href="#" class="nav-item">Privacy</a>
+          <a href="#" class="nav-item">Notification Preferences</a>
+          <a href="#" class="nav-item">API clients</a>
+          <a href="#" class="nav-item">Close account</a>
+          <button type="button" class="nav-item btn-delete-account" (click)="onDeleteAccount(user.id)">Delete account</button>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="content">
+        <div class="content-header">
+          <h1>Account</h1>
+          <p>Edit your account settings and change your password here.</p>
+        </div>
+
+        <div class="content-body">
+          <div class="email-section">
+            <label>Email:</label>
+            <div class="email-input-group">
+              <input type="text" [value]="'Your email address is ' + user.email" readonly class="email-input">
+              <button class="btn-edit-email" aria-label="Edit email">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="password-form">
+            @if (errorMessage()) {
+              <div class="alert alert-error">
+                {{ errorMessage() }}
+              </div>
+            }
+
+            @if (successMessage()) {
+              <div class="alert alert-success">
+                {{ successMessage() }}
+              </div>
+            }
+
+            <div class="form-group">
+              <label for="oldPassword">Current password</label>
+              <input 
+                type="password" 
+                id="oldPassword" 
+                formControlName="oldPassword"
+                placeholder="Enter current password"
+                class="form-input"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">New password</label>
+              <input 
+                type="password" 
+                id="newPassword" 
+                formControlName="newPassword"
+                placeholder="Enter new password"
+                class="form-input"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm new password</label>
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                formControlName="confirmPassword"
+                placeholder="Re-type new password"
+                class="form-input"
+              >
+            </div>
+
+            <button type="submit" class="btn-submit" [disabled]="isSubmitting() || passwordForm.invalid">
+              {{ isSubmitting() ? 'Changing...' : 'Change password' }}
+            </button>
+          </form>
+          
+          <div class="mfa-section">
+            <h4>Multi-factor Authentication</h4>
+            <p>Increase your account security by requiring that a code emailed to you be entered when you log in.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  } @else {
+    <div class="not-logged-in">
+      <h2>Please log in to view your account settings.</h2>
+    </div>
+  }
+</div>

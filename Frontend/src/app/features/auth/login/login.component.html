@@ -1,7 +1,7 @@
 <main class="login-page">
-  <app-navbar></app-navbar>
-
   <div class="page-container">
+    <app-navbar></app-navbar>
+
     <section class="auth-wrapper" aria-labelledby="login-title">
       <article class="auth-card">
         <!-- Lado izquierdo: Visual / Branding -->
@@ -21,6 +21,12 @@
             <h1 id="login-title">Hola de nuevo</h1>
             <p>Ingresa a tu cuenta para continuar aprendiendo.</p>
           </header>
+
+          @if (errorMessage()) {
+            <div style="background: rgba(255, 60, 60, 0.1); color: #ff3c3c; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem; border: 1px solid rgba(255, 60, 60, 0.2);">
+              {{ errorMessage() }}
+            </div>
+          }
 
           <form class="login-form" [formGroup]="loginForm" novalidate (ngSubmit)="onSubmit()">
             <app-input

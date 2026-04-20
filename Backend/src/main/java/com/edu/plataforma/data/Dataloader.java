@@ -38,7 +38,7 @@ public class Dataloader implements CommandLineRunner {
         student.setEmail("estudiante@plataforma.com");
         student.setPassword(passwordEncoder.encode("user123"));
         student.setName("Estudiante de Prueba");
-        student.setRole("USER");
+        student.setRole("STUDENT");
 
         userRepository.saveAll(Arrays.asList(admin, student));
         System.out.println("Usuarios cargados exitosamente.");

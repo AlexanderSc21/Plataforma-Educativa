@@ -1,10 +1,12 @@
 package com.edu.plataforma.controller;
 
+import com.edu.plataforma.dto.ChangePasswordRequest;
 import com.edu.plataforma.model.Certificate;
 import com.edu.plataforma.model.Progress;
 import com.edu.plataforma.model.User;
 import com.edu.plataforma.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +50,16 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         User updatedUser = userService.update(id, userDetails);
         return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request) {
+        boolean success = userService.changePassword(id, request.getOldPassword(), request.getNewPassword());
+        if (success) {
+            return ResponseEntity.ok().body("{\"message\": \"Contraseña actualizada exitosamente\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"La contraseña actual es incorrecta o el usuario no existe\"}");
+        }
     }
 
     @DeleteMapping("/{id}")

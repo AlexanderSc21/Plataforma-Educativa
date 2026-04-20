@@ -5,6 +5,7 @@ import com.edu.plataforma.model.Progress;
 import com.edu.plataforma.model.User;
 import com.edu.plataforma.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -43,11 +47,29 @@ public class UserService {
     public User update(Long id, User userDetails) {
         return userRepository.findById(id).map(user -> {
             user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
+            // Nota: El PUT genérico no debería sobreescribir contraseñas planas. 
+            // Para eso hemos creado el método changePassword().
+            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+                // Solo si mandan una clave, asume que ya fue tratada o es para admin, 
+                // pero la buena práctica es no mandar passwords en este update.
+            }
             user.setName(userDetails.getName());
             user.setRole(userDetails.getRole());
             return userRepository.save(user);
         }).orElse(null);
+    }
+
+    public boolean changePassword(Long id, String oldPassword, String newPassword) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean delete(Long id) {
